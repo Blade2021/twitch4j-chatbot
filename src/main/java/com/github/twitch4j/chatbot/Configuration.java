@@ -7,11 +7,15 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import java.util.List;
 import java.util.Map;
 
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+//@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Configuration {
 
     private Boolean debug;
+
+    private String discordURL;
+
+    private String botPrefix;
 
     private Map<String, String> bot;
 
@@ -27,6 +31,22 @@ public class Configuration {
 
     public void setDebug(Boolean debug) {
         this.debug = debug;
+    }
+
+    public String getBotPrefix() {
+        return botPrefix;
+    }
+
+    public void setBotPrefix(String botPrefix) {
+        this.botPrefix = botPrefix;
+    }
+
+    public void setDiscordURL(String discordURL) {
+        this.discordURL = discordURL;
+    }
+
+    public String getDiscordURL(){
+        return discordURL;
     }
 
     public Map<String, String> getBot() {

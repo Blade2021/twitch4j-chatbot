@@ -1,7 +1,9 @@
-package com.github.twitch4j.chatbot.features;
+package com.github.twitch4j.chatbot.events;
 
 import com.github.philippheuer.events4j.simple.SimpleEventHandler;
 import com.github.twitch4j.chat.events.channel.ChannelMessageEvent;
+
+import static com.github.twitch4j.chatbot.Launcher.twitchDispatcher;
 
 public class WriteChannelChatToConsole {
 
@@ -11,7 +13,12 @@ public class WriteChannelChatToConsole {
      * @param eventHandler SimpleEventHandler
      */
     public WriteChannelChatToConsole(SimpleEventHandler eventHandler) {
-        eventHandler.onEvent(ChannelMessageEvent.class, event -> onChannelMessage(event));
+        eventHandler.onEvent(ChannelMessageEvent.class, event -> {
+
+            //onChannelMessage(event);
+            twitchDispatcher.onChannelMessage(event);
+
+        });
     }
 
     /**
@@ -24,6 +31,8 @@ public class WriteChannelChatToConsole {
                 event.getUser().getName(),
                 event.getMessage()
         );
+
+
     }
 
 }

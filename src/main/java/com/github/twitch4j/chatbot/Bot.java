@@ -7,10 +7,10 @@ import com.github.twitch4j.TwitchClient;
 import com.github.twitch4j.TwitchClientBuilder;
 import com.github.philippheuer.events4j.simple.SimpleEventHandler;
 
-import com.github.twitch4j.chatbot.features.ChannelNotificationOnDonation;
-import com.github.twitch4j.chatbot.features.ChannelNotificationOnFollow;
-import com.github.twitch4j.chatbot.features.ChannelNotificationOnSubscription;
-import com.github.twitch4j.chatbot.features.WriteChannelChatToConsole;
+import com.github.twitch4j.chatbot.events.ChannelNotificationOnDonation;
+import com.github.twitch4j.chatbot.events.ChannelNotificationOnFollow;
+import com.github.twitch4j.chatbot.events.ChannelNotificationOnSubscription;
+import com.github.twitch4j.chatbot.events.WriteChannelChatToConsole;
 
 import java.io.InputStream;
 
@@ -19,12 +19,15 @@ public class Bot {
     /**
      * Holds the Bot Configuration
      */
-    private Configuration configuration;
+    protected Configuration configuration;
+    private String botPrefix;
 
     /**
      * Twitch4J API
      */
     private TwitchClient twitchClient;
+
+
 
     /**
      * Constructor
@@ -33,12 +36,21 @@ public class Bot {
         // Load Configuration
         loadConfiguration();
 
+        botPrefix = configuration.getBot().get("botPrefix");
+
         TwitchClientBuilder clientBuilder = TwitchClientBuilder.builder();
 
         //region Auth
         OAuth2Credential credential = new OAuth2Credential(
                 "twitch",
                 configuration.getCredentials().get("irc")
+        );
+        //endregion
+
+        //region Auth
+        OAuth2Credential modCredential = new OAuth2Credential(
+                "twitch",
+                configuration.getCredentials().get("modCred")
         );
         //endregion
 
@@ -52,6 +64,7 @@ public class Bot {
                  * Joins irc and triggers all chat based events (viewer join/leave/sub/bits/gifted subs/...)
                  */
                 .withChatAccount(credential)
+                .withDefaultAuthToken(modCredential)
                 .withEnableChat(true)
                 /*
                  * GraphQL has a limited support
@@ -70,6 +83,10 @@ public class Bot {
                  */
                 .build();
         //endregion
+    }
+
+    public String getDiscordURL(){
+        return configuration.getDiscordURL();
     }
 
     /**
@@ -107,6 +124,10 @@ public class Bot {
         for (String channel : configuration.getChannels()) {
             twitchClient.getChat().joinChannel(channel);
         }
+    }
+
+    public String getBotPrefix(){
+        return this.botPrefix;
     }
 
 }
